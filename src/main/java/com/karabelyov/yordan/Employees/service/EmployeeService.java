@@ -10,18 +10,16 @@ import java.util.List;
 
 public interface EmployeeService {
 
-    Employee save(int id,String name, String tech, String address, int age );
-    Employee save(String name, String tech, String address, int age );
 
     Employee save(Employee employee);
 
     Employee findById(int id);
+    Employee findById(Long id);
 
     List<Employee> findAll();
 
     List<Employee> findAllByString(String word);
 
-    List<Employee> findAllByInt(int digit);
 
     void deleteById(int id);
 

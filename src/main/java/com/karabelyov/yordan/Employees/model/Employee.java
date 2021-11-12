@@ -1,6 +1,5 @@
 package com.karabelyov.yordan.Employees.model;
 
-import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

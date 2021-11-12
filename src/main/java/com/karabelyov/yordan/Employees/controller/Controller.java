@@ -1,15 +1,16 @@
-package com.karabelyov.yordan.Employees.Controllers;
+package com.karabelyov.yordan.Employees.controller;
 
-import com.karabelyov.yordan.Employees.exceptions.EmployeeNotFound;
 import com.karabelyov.yordan.Employees.model.Employee;
 import com.karabelyov.yordan.Employees.results.ResultObject;
 import com.karabelyov.yordan.Employees.service.EmployeeService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/employees")
 public class Controller {
@@ -27,13 +28,19 @@ public class Controller {
         return employeeService.findById(id);
     }
 
-    @GetMapping("/save")
-    public void saveEmployeeById(@RequestParam  int id , @RequestParam String name, @RequestParam String tech, @RequestParam String address, @RequestParam int age) {
-        employeeService.save(id, name, tech, address, age);
-    }
-    @GetMapping("/saveNew")
-    public void saveNewEmployee(@RequestParam String name, @RequestParam String tech, @RequestParam String address, @RequestParam int age) {
-        employeeService.save(name, tech, address, age);
+    @PostMapping(value = "/save")
+    public void saveEmployee(@RequestBody Employee employee) {
+
+        if (employee.getId() != null) {
+            Employee employeeResult = employeeService.findById(employee.getId());
+            employeeResult.setName(employee.getName());
+            employeeResult.setAddress(employee.getAddress());
+            employeeResult.setTechnology(employee.getTechnology());
+            employeeResult.setAge(employee.getAge());
+            employeeService.save(employeeResult);
+            return;
+        }
+        employeeService.save(employee);
     }
 
     @GetMapping("/{word}")
@@ -41,19 +48,17 @@ public class Controller {
         return employeeService.findAllByString(word);
     }
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteEmployee(@PathVariable("id") int id) {
         employeeService.deleteById(id);
     }
 
-
-    @GetMapping("/page")
-    public ResultObject employeesByNamePaginated(@RequestParam String value, @RequestParam int page, @RequestParam int pageSize) throws EmployeeNotFound {
+    @GetMapping("/employee")
+    public ResultObject employeesByNamePaginated(@RequestParam String value, @RequestParam int page, @RequestParam int pageSize) {
 
         ResultObject employees = employeeService.findPagination(value, page, pageSize);
-
         if (employees == null) {
-            throw new EmployeeNotFound();
+            return new ResultObject(0,new ArrayList<>());
         }
         return employees;
     }
