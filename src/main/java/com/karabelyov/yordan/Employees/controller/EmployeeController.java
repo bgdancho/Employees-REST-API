@@ -4,6 +4,8 @@ import com.karabelyov.yordan.Employees.model.Employee;
 import com.karabelyov.yordan.Employees.results.ResultObject;
 import com.karabelyov.yordan.Employees.service.EmployeeService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     EmployeeService employeeService;
