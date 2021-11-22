@@ -8,29 +8,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/employees")
-public class Controller {
+public class EmployeeController {
 
     @Autowired
     EmployeeService employeeService;
 
-    @GetMapping("/all")
-    public List<Employee> allEmployees() {
-        return employeeService.findAll();
+    @GetMapping("/")
+    public ResultObject get(@RequestParam String filter, @RequestParam int page, @RequestParam int pageSize) {
+
+        ResultObject employees = employeeService.findPagination(filter, page, pageSize);
+        if (employees == null) {
+            return new ResultObject(0,new ArrayList<>());
+        }
+        return employees;
     }
 
-    @GetMapping("getById/{id}")
+    @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable("id") int id) {
         return employeeService.findById(id);
     }
 
-    @PostMapping(value = "/save")
-    public void saveEmployee(@RequestBody Employee employee) {
+    @PostMapping(value = "/")
+    public void post(@RequestBody Employee employee) {
+        employeeService.save(employee);
+    }
 
+    @PutMapping(value = "/")
+    public Employee put(@RequestBody Employee employee){
         if (employee.getId() != null) {
             Employee employeeResult = employeeService.findById(employee.getId());
             employeeResult.setName(employee.getName());
@@ -38,28 +46,14 @@ public class Controller {
             employeeResult.setTechnology(employee.getTechnology());
             employeeResult.setAge(employee.getAge());
             employeeService.save(employeeResult);
-            return;
+            return employee;
         }
-        employeeService.save(employee);
+        return null;
     }
 
-    @GetMapping("/{word}")
-    public List<Employee> employeesByName(@PathVariable("word") String word) {
-        return employeeService.findAllByString(word);
-    }
-
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteEmployee(@PathVariable("id") int id) {
         employeeService.deleteById(id);
     }
 
-    @GetMapping("/employee")
-    public ResultObject employeesByNamePaginated(@RequestParam String value, @RequestParam int page, @RequestParam int pageSize) {
-
-        ResultObject employees = employeeService.findPagination(value, page, pageSize);
-        if (employees == null) {
-            return new ResultObject(0,new ArrayList<>());
-        }
-        return employees;
-    }
 }

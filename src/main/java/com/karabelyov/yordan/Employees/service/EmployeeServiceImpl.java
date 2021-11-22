@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-
     @Autowired
     EmployeeRepository employeeRepository;
 
@@ -30,15 +29,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findAllByString(String word) {
+    public List<Employee> findAllByString(String filter) {
 
-        List employeeList = new ArrayList(employeeRepository.findByName(word));
+        List employeeList = new ArrayList(employeeRepository.findByName(filter));
 
         return employeeList;
 
         }
-
-
 
     @Override
     public Employee findById(int id) {
@@ -56,8 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return null;
     }
-
-
+    
     @Override
     public void deleteById(int id) {
         Long idToDelete = Long.valueOf(id);
@@ -67,9 +63,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResultObject findPagination(String word, int page, int pageSize) {
+    public ResultObject findPagination(String filter, int page, int pageSize) {
 
-        List<Employee> employees = findAllByString(word);
+        List<Employee> employees = findAllByString(filter);
         if (employees.isEmpty()) {
             return null;
         }
