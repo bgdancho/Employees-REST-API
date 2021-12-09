@@ -3,8 +3,11 @@ package com.karabelyov.yordan.Employees.controller;
 import com.karabelyov.yordan.Employees.model.Employee;
 import com.karabelyov.yordan.Employees.results.ResultObject;
 import com.karabelyov.yordan.Employees.service.EmployeeService;
+import org.apache.tomcat.jni.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @CrossOrigin
@@ -41,8 +44,11 @@ public class EmployeeController {
             employeeResult.setAge(employee.getAge());
             employeeService.save(employeeResult);
             return employee;
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Value cannot be negative number"
+            );
         }
-        return null;
     }
 
     @DeleteMapping("/{id}")
