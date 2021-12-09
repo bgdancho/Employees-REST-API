@@ -4,12 +4,10 @@ import com.karabelyov.yordan.Employees.model.Employee;
 import com.karabelyov.yordan.Employees.repository.EmployeeRepository;
 import com.karabelyov.yordan.Employees.results.ResultObject;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -19,7 +17,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee save(Employee employee) {
-
         return employeeRepository.save(employee);
     }
 
@@ -29,13 +26,27 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findAllByString(String filter) {
+    public List<Employee> findAllByString(String filter, String orderBy) {
 
-        List employeeList = new ArrayList(employeeRepository.findByName(filter));
-
-        return employeeList;
-
+        switch (orderBy) {
+            case "address": {
+                List<Employee> employeeList = new ArrayList(employeeRepository.findAllByNameOrderByAddress(filter));
+                return employeeList;
+            }
+            case "technology": {
+                List<Employee> employeeList = new ArrayList(employeeRepository.findAllByNameOrderByTechnology(filter));
+                return employeeList;
+            }
+            case "name": {
+                List<Employee> employeeList = new ArrayList(employeeRepository.findAllByNameOrderByName(filter));
+                return employeeList;
+            }
+            default: {
+                List<Employee> employeeList = new ArrayList(employeeRepository.findAllByNameOrderById(filter));
+                return employeeList;
+            }
         }
+    }
 
     @Override
     public Employee findById(int id) {
@@ -43,17 +54,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (idToFind > 0) {
             return employeeRepository.findById(idToFind).get();
         }
-        return null;
+        return new Employee();
     }
 
     @Override
     public Employee findById(Long id) {
-        if (id > 0){
+        if (id > 0) {
             return employeeRepository.findById(id).get();
         }
-        return null;
+        return new Employee();
     }
-    
+
     @Override
     public void deleteById(int id) {
         Long idToDelete = Long.valueOf(id);
@@ -63,11 +74,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResultObject findPagination(String filter, int page, int pageSize) {
+    public ResultObject findPagination(String filter, int page, int pageSize, String orderBy) {
 
-        List<Employee> employees = findAllByString(filter);
+        List<Employee> employees = findAllByString(filter, orderBy);
         if (employees.isEmpty()) {
-            return null;
+            return new ResultObject(0, employees);
         }
 
         if (employees.size() <= pageSize) {
@@ -78,7 +89,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
         if (page >= totalPages) {
-            return null;
+            return new ResultObject(0, employees);
         }
 
         if (page == 0) {
@@ -92,8 +103,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return
                 new ResultObject(totalPages, employees.subList(page * pageSize, employees.size()));
-
-
     }
 
     private int getPages(int pageSize, List<Employee> employees) {

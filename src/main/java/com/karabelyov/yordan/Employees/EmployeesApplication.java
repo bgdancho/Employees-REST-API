@@ -18,11 +18,9 @@ public class EmployeesApplication implements CommandLineRunner {
         SpringApplication.run(EmployeesApplication.class, args);
     }
 
-
     @Override
     @Transactional
     public void run(String... args) {
-
 
         Employee employee = new Employee("Yordan", "Java", "Sofia", 18);
         Employee employee1 = new Employee("Ivan", "JavaScript", "Sofia", 2);
@@ -55,7 +53,5 @@ public class EmployeesApplication implements CommandLineRunner {
         employeeService.save(employee12);
         employeeService.save(employee13);
         employeeService.save(employee14);
-
     }
-
 }

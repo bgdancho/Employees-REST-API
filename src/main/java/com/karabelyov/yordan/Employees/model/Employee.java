@@ -1,6 +1,5 @@
 package com.karabelyov.yordan.Employees.model;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,11 +10,9 @@ public class Employee {
     @Id
     @GeneratedValue
     private Long id;
-
     private String name;
     private String technology;
     private String address;
-
     private int age;
 
     public Employee() {
